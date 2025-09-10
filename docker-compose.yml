@@ -1,0 +1,22 @@
+
+version: '3.8'
+services:
+  firebase-emulators:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:emulators
+    container_name: firebase_emulators
+    ports:
+      - "4000:4000" # Emulator Suite UI
+      - "8080:8080" # Firestore Emulator
+      - "9099:9099" # Auth Emulator
+    command: >
+      bash -c "gcloud emulators firestore start --host-port=0.0.0.0:8080 & 
+               gcloud emulators auth start --host-port=0.0.0.0:9099 && 
+               sleep infinity"
+    volumes:
+      - ./firebase_data:/opt/firebase/data
+    environment:
+      - FIRESTORE_PROJECT_ID=damdoh-local
+      - GCLOUD_PROJECT=damdoh-local
+
+volumes:
+  firebase_data:
