@@ -1,7 +1,7 @@
-
 import * as admin from "firebase-admin";
-import type { UserRole } from "@/lib/types";
+import type { UserRole } from "../../../../lib/types";
 import * as functions from "firebase-functions";
+import { verifyKiloToken } from "../../../../lib/jwt-utils";
 
 const db = admin.firestore();
 
@@ -84,13 +84,28 @@ export async function getUserDocument(
 
 /**
  * Checks if the user is authenticated.
+ * This function first checks for Firebase Authentication tokens,
+ * and if not found, checks for a JWT token in a custom header.
  * @param {functions.https.CallableContext} context The context of the function call.
  * @return {string} The user's UID.
  * @throws {functions.https.HttpsError} Throws an error if the user is not authenticated.
  */
 export const checkAuth = (context: functions.https.CallableContext): string => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError("unauthenticated", "error.unauthenticated");
+  // First, check for Firebase Authentication tokens
+  if (context.auth) {
+    return context.auth.uid;
   }
-  return context.auth.uid;
+  
+  // If not found, check for a JWT token in a custom header
+  // This is for compatibility with systems that use JWT tokens
+  const jwtToken = context.rawRequest?.headers['x-kilo-token'];
+  if (jwtToken && typeof jwtToken === 'string') {
+    const decodedToken = verifyKiloToken(jwtToken);
+    if (decodedToken && decodedToken.kiloUserId) {
+      return decodedToken.kiloUserId;
+    }
+  }
+  
+  // If neither authentication method is found, throw an error
+  throw new functions.https.HttpsError("unauthenticated", "error.unauthenticated");
 };

@@ -1,6 +1,5 @@
-
 {
-  "name": "nextn",
+  "name": "damdoh-local",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +9,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "firebase:emulators": "firebase emulators:start --project=damdoh-local",
+    "firebase:emulators:export": "firebase emulators:export ./firebase_data --project=damdoh-local",
+    "postinstall": "npm run build-functions",
+    "build-functions": "cd firebase/functions && npm install && npm run build",
+    "serve-functions": "cd firebase/functions && npm run serve",
+    "deploy-functions": "cd firebase/functions && npm run deploy"
   },
   "dependencies": {
     "@genkit-ai/firebase": "^1.19.1",
@@ -29,8 +34,6 @@
     "@radix-ui/react-popover": "^1.1.6",
     "@radix-ui/react-progress": "^1.1.2",
     "@radix-ui/react-radio-group": "^1.2.3",
-    "dexie": "^4.0.7",
-    "dexie-react-hooks": "^1.1.7",
     "@radix-ui/react-scroll-area": "^1.2.3",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-separator": "^1.1.2",
@@ -45,12 +48,16 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "dexie": "^4.0.7",
+    "dexie-react-hooks": "^1.1.7",
     "dotenv": "^16.5.0",
+    "express": "^4.19.2",
     "firebase": "^11.9.1",
     "firebase-admin": "^12.1.0",
     "firebase-functions": "^5.0.1",
     "genkit": "^1.19.1",
     "html5-qrcode": "^2.3.8",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.475.0",
     "next": "^15.3.4",
     "next-intl": "^3.15.3",
@@ -79,4 +86,3 @@
     "typescript": "^5"
   }
 }
-

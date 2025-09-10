@@ -1,4 +1,3 @@
-
 version: '3.8'
 services:
   firebase-emulators:
@@ -8,10 +7,10 @@ services:
       - "4000:4000" # Emulator Suite UI
       - "8080:8080" # Firestore Emulator
       - "9099:9099" # Auth Emulator
+      - "5001:5001" # Functions Emulator
+      - "5000:5000" # Hosting Emulator
     command: >
-      bash -c "gcloud emulators firestore start --host-port=0.0.0.0:8080 & 
-               gcloud emulators auth start --host-port=0.0.0.0:9099 && 
-               sleep infinity"
+      bash -c "firebase emulators:start --project=damdoh-local --import=/opt/firebase/data --export-on-exit=/opt/firebase/data"
     volumes:
       - ./firebase_data:/opt/firebase/data
     environment:
